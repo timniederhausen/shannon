@@ -18,6 +18,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _SHN_DEFINED
 #define _SHN_DEFINED 1
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 
 #define SHANNON_N 16
@@ -40,5 +44,9 @@ void shn_maconly(shn_ctx *c, uint8_t *buf, int nbytes); /* accumulate MAC */
 void shn_encrypt(shn_ctx *c, uint8_t *buf, int nbytes); /* encrypt + MAC */
 void shn_decrypt(shn_ctx *c, uint8_t *buf, int nbytes); /* decrypt + MAC */
 void shn_finish(shn_ctx *c, uint8_t *buf, int nbytes); /* finalise MAC */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _SHN_DEFINED */
