@@ -18,7 +18,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* interface, multiplication table and SBox */
 #include <stdlib.h>
 #include <string.h>
-#include "Shannon.h"
+#include "ShannonInternal.h"
 
 /*
  * FOLD is how many register cycles need to be performed after combining the
@@ -117,12 +117,12 @@ cycle(shn_ctx *c)
     { \
 	c->CRC[OFF(z,0)] ^= c->CRC[OFF(z,2)] ^ c->CRC[OFF(z,15)] ^ i; \
     }
-    
+
 static void
 crcfunc(shn_ctx *c, WORD i)
 {
     WORD    t;
-    
+
     CRCFUNC(c, i, 0);
     /* now correct alignment of CRC accumulator */
     t = c->CRC[0];
@@ -219,11 +219,11 @@ shn_diffuse(shn_ctx *c)
  * Note also initializes the CRC register as a side effect.
  */
 static void
-shn_loadkey(shn_ctx *c, UCHAR key[], int keylen)
+shn_loadkey(shn_ctx *c, const uint8_t key[], int keylen)
 {
     int		i, j;
     WORD	k;
-    UCHAR	xtra[4];
+    uint8_t	xtra[4];
 
     /* start folding in key */
     for (i = 0; i < (keylen & ~0x3); i += 4)
@@ -263,7 +263,7 @@ shn_loadkey(shn_ctx *c, UCHAR key[], int keylen)
 /* Published "key" interface
  */
 void
-shn_key(shn_ctx *c, UCHAR key[], int keylen)
+shn_key(shn_ctx *c, const uint8_t key[], int keylen)
 {
     shn_initstate(c);
     shn_loadkey(c, key, keylen);
@@ -275,7 +275,7 @@ shn_key(shn_ctx *c, UCHAR key[], int keylen)
 /* Published "nonce" interface
  */
 void
-shn_nonce(shn_ctx *c, UCHAR nonce[], int noncelen)
+shn_nonce(shn_ctx *c, const uint8_t nonce[], int noncelen)
 {
     shn_reloadstate(c);
     c->konst = INITKONST;
@@ -293,7 +293,7 @@ shn_nonce(shn_ctx *c, UCHAR nonce[], int noncelen)
 	    XORWORD(c->sbuf, buf+(z*4)); \
 	}
 void
-shn_stream(shn_ctx *c, UCHAR *buf, int nbytes)
+shn_stream(shn_ctx *c, uint8_t *buf, int nbytes)
 {
     /* handle any previously buffered bytes */
     while (c->nbuf != 0 && nbytes != 0) {
@@ -358,7 +358,7 @@ shn_stream(shn_ctx *c, UCHAR *buf, int nbytes)
 	c->R[OFF(z+1,KEYP)] ^= t1; \
     }
 void
-shn_maconly(shn_ctx *c, UCHAR *buf, int nbytes)
+shn_maconly(shn_ctx *c, uint8_t *buf, int nbytes)
 {
     /* handle any previously buffered bytes */
     if (c->nbuf != 0) {
@@ -403,7 +403,7 @@ shn_maconly(shn_ctx *c, UCHAR *buf, int nbytes)
 	buf += 4;
 	nbytes -= 4;
     }
-    
+
     /* handle any trailing bytes */
     if (nbytes != 0) {
 	cycle(c);
@@ -430,7 +430,7 @@ shn_maconly(shn_ctx *c, UCHAR *buf, int nbytes)
 	WORD2BYTE(t3,buf+(z*4)); \
     }
 void
-shn_encrypt(shn_ctx *c, UCHAR *buf, int nbytes)
+shn_encrypt(shn_ctx *c, uint8_t *buf, int nbytes)
 {
     WORD	t3 = 0;
 
@@ -512,7 +512,7 @@ shn_encrypt(shn_ctx *c, UCHAR *buf, int nbytes)
 	WORD2BYTE(t3, buf+(z*4)); \
     }
 void
-shn_decrypt(shn_ctx *c, UCHAR *buf, int nbytes)
+shn_decrypt(shn_ctx *c, uint8_t *buf, int nbytes)
 {
     WORD	t3 = 0;
 
@@ -585,7 +585,7 @@ shn_decrypt(shn_ctx *c, UCHAR *buf, int nbytes)
  * they were encrypted zero bytes, so plaintext (zero) is accumulated.
  */
 void
-shn_finish(shn_ctx *c, UCHAR *buf, int nbytes)
+shn_finish(shn_ctx *c, uint8_t *buf, int nbytes)
 {
     int		i;
 
@@ -594,7 +594,7 @@ shn_finish(shn_ctx *c, UCHAR *buf, int nbytes)
 	/* LFSR already cycled */
 	macfunc(c, c->mbuf);
     }
-    
+
     /* perturb the MAC to mark end of input.
      * Note that only the stream register is updated, not the CRC. This is an
      * action that can't be duplicated by passing in plaintext, hence

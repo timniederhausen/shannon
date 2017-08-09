@@ -30,7 +30,7 @@ VERSION = 1.0
 
 # End of configuration
 
-SHN_SRC = Shannon.h hexlib.h ShannonRef.c \
+SHN_SRC = Shannon.h ShannonInternal.h hexlib.h ShannonRef.c \
 	ShannonTest.c ShannonFast.c hexlib.c\
 	Makefile ShannonPaper.pdf
 SHNREF_OBJS = ShannonRef.o ShannonTest.o hexlib.o

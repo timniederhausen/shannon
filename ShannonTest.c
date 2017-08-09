@@ -19,7 +19,7 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "Shannon.h"		/* interface definitions */
+#include "ShannonInternal.h"
 
 shn_ctx ctx;
 
@@ -59,13 +59,13 @@ char	*streamout =
 	"27 01 9f c8 84 bb 09 05 ea 08 c9 b5 5f 20 7b 5d 34 80 b4 a3";
 char	*macout =
 	"00 13 88 e9 6b a7 8e 74 4e b0 b0 30 44 25 c0 90 36 dc 80 1a";
-char	*zeros = 
+char	*zeros =
 	"00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00";
 char    *iterout =
 	"4e 00 9e 3f 99 3e 3a 1e b9 cb 28 11 a2 e9 09 69 a8 9e 1e f3";
-char	*nonceout = 
+char	*nonceout =
 	"ca a7 23 3e 5c c1 67 64 3a 11 62 25 71 6e 75 28 18 c1 d6 4f";
-char	*hellmac = 
+char	*hellmac =
 	"2c ac f6 55 bc 33 09 b5 d3 9b 82 7e 27 fa cf 97 de 83 0f e1";
 
 UCHAR	testbuf[STREAMTEST + INPUTSIZE];
