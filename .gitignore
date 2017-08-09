@@ -1,0 +1,6 @@
+*.o
+*.tgz
+
+# Artifacts
+/ShannonRef
+/ShannonFast
