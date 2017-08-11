@@ -1,0 +1,38 @@
+declare_args() {
+  # Prefer the fast implementation over the reference impl.
+  shannon_use_fast_impl = true
+}
+
+config("shannon_config") {
+  include_dirs = [ "." ]
+}
+
+source_set("shannon") {
+  public = [
+    "Shannon.h",
+  ]
+
+  sources = [
+    "hexlib.c",
+    "hexlib.h",
+    "ShannonInternal.h",
+  ]
+
+  if (shannon_use_fast_impl) {
+    sources += [ "ShannonFast.c" ]
+  } else {
+    sources += [ "ShannonRef.c" ]
+  }
+
+  public_configs = [ ":shannon_config" ]
+}
+
+executable("shannon_test") {
+  sources = [
+    "ShannonTest.c",
+  ]
+
+  deps = [
+    ":shannon",
+  ]
+}
